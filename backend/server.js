@@ -3,10 +3,12 @@ const cors = require('cors');
 require('dotenv').config();
 const db = require('./config/db');
 const employeeRoutes = require('./routes/employeeRoutes');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/api/health', async (req, res) => {
   try {

@@ -65,3 +65,26 @@ exports.deleteEmployee = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete employee' });
   }
 };
+exports.uploadDocument = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please select a file' });
+    }
+
+    const [result] = await db.query(
+      'UPDATE employees SET document_path = ? WHERE id = ?',
+      [`/uploads/${req.file.filename}`, req.params.id]
+    );
+
+    if (!result.affectedRows) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    res.json({
+      message: 'Document uploaded successfully',
+      document_path: `/uploads/${req.file.filename}`
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to upload document' });
+  }
+};
